@@ -1,0 +1,77 @@
+Experiment Log:
+Shifts: 5, Iterations: 10, Clashes: 0
+Shifts: 5, Iterations: 20, Clashes: 0
+Shifts: 5, Iterations: 30, Clashes: 0
+Shifts: 10, Iterations: 10, Clashes: 0
+Shifts: 10, Iterations: 20, Clashes: 0
+Shifts: 10, Iterations: 30, Clashes: 0
+Shifts: 15, Iterations: 10, Clashes: 0
+Shifts: 15, Iterations: 20, Clashes: 0
+Shifts: 15, Iterations: 30, Clashes: 0
+Optimal Shifts: 5, Optimal Iterations: 10, Minimum Clashes: 0
+Experiment Log:
+Shifts: 5, Iterations: 10, Clashes: 0
+Shifts: 5, Iterations: 20, Clashes: 0
+Shifts: 5, Iterations: 30, Clashes: 0
+Shifts: 10, Iterations: 10, Clashes: 0
+Shifts: 10, Iterations: 20, Clashes: 0
+Shifts: 10, Iterations: 30, Clashes: 0
+Shifts: 15, Iterations: 10, Clashes: 0
+Shifts: 15, Iterations: 20, Clashes: 0
+Shifts: 15, Iterations: 30, Clashes: 0
+Optimal Shifts: 5, Optimal Iterations: 10, Minimum Clashes: 0
+Experiment Log:
+Shifts: 5, Iterations: 10, Clashes: 0
+Shifts: 5, Iterations: 20, Clashes: 0
+Shifts: 5, Iterations: 30, Clashes: 0
+Shifts: 10, Iterations: 10, Clashes: 0
+Shifts: 10, Iterations: 20, Clashes: 0
+Shifts: 10, Iterations: 30, Clashes: 0
+Shifts: 15, Iterations: 10, Clashes: 0
+Shifts: 15, Iterations: 20, Clashes: 0
+Shifts: 15, Iterations: 30, Clashes: 0
+Optimal Shifts: 5, Optimal Iterations: 10, Minimum Clashes: 0
+Experiment Log:
+Shifts: 5, Iterations: 10, Clashes: 0
+Shifts: 5, Iterations: 20, Clashes: 0
+Shifts: 5, Iterations: 30, Clashes: 0
+Shifts: 10, Iterations: 10, Clashes: 0
+Shifts: 10, Iterations: 20, Clashes: 0
+Shifts: 10, Iterations: 30, Clashes: 0
+Shifts: 15, Iterations: 10, Clashes: 0
+Shifts: 15, Iterations: 20, Clashes: 0
+Shifts: 15, Iterations: 30, Clashes: 0
+Optimal Shifts: 5, Optimal Iterations: 10, Minimum Clashes: 0
+Experiment Log:
+Shifts: 5, Iterations: 10, Clashes: 0
+Shifts: 5, Iterations: 20, Clashes: 0
+Shifts: 5, Iterations: 30, Clashes: 0
+Shifts: 10, Iterations: 10, Clashes: 0
+Shifts: 10, Iterations: 20, Clashes: 0
+Shifts: 10, Iterations: 30, Clashes: 0
+Shifts: 15, Iterations: 10, Clashes: 0
+Shifts: 15, Iterations: 20, Clashes: 0
+Shifts: 15, Iterations: 30, Clashes: 0
+Optimal Shifts: 5, Optimal Iterations: 10, Minimum Clashes: 0
+Experiment Log:
+Shifts: 5, Iterations: 10, Clashes: 0
+Shifts: 5, Iterations: 20, Clashes: 0
+Shifts: 5, Iterations: 30, Clashes: 0
+Shifts: 10, Iterations: 10, Clashes: 0
+Shifts: 10, Iterations: 20, Clashes: 0
+Shifts: 10, Iterations: 30, Clashes: 0
+Shifts: 15, Iterations: 10, Clashes: 0
+Shifts: 15, Iterations: 20, Clashes: 0
+Shifts: 15, Iterations: 30, Clashes: 0
+Optimal Shifts: 5, Optimal Iterations: 10, Minimum Clashes: 0
+Experiment Log:
+Shifts: 5, Iterations: 10, Clashes: 0
+Shifts: 5, Iterations: 20, Clashes: 0
+Shifts: 5, Iterations: 30, Clashes: 0
+Shifts: 10, Iterations: 10, Clashes: 0
+Shifts: 10, Iterations: 20, Clashes: 0
+Shifts: 10, Iterations: 30, Clashes: 0
+Shifts: 15, Iterations: 10, Clashes: 0
+Shifts: 15, Iterations: 20, Clashes: 0
+Shifts: 15, Iterations: 30, Clashes: 0
+Optimal Shifts: 5, Optimal Iterations: 10, Minimum Clashes: 0
