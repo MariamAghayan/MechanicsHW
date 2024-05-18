@@ -10,7 +10,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import java.io.*;
 import java.util.*;
 
@@ -33,11 +32,10 @@ public class TimeTable extends JFrame implements ActionListener {
         this.setTools();
         this.add(this.tools);
         this.setVisible(true);
-        this.courses = new CourseArray(150, 13); // Initialize courses
+        this.courses = new CourseArray(139, 13); // Initialize courses
         this.autoassociator = new Autoassociator(this.courses); // Initialize Autoassociator with courses
-
+        this.trainAutoassociator(); // Train the autoassociator with clash-free timeslots
     }
-
 
     public void setTools() {
         String[] capField = new String[]{"Slots:", "Courses:", "Clash File:", "Iters:", "Shift:"};
@@ -46,21 +44,20 @@ public class TimeTable extends JFrame implements ActionListener {
         this.tool = new JButton[capButton.length];
         this.tools.setLayout(new GridLayout(2 * capField.length + capButton.length, 1));
 
-        int i;
-        for (i = 0; i < this.field.length; ++i) {
+        for (int i = 0; i < this.field.length; ++i) {
             this.tools.add(new JLabel(capField[i]));
             this.field[i] = new JTextField(5);
             this.tools.add(this.field[i]);
         }
 
-        for (i = 0; i < this.tool.length; ++i) {
+        for (int i = 0; i < this.tool.length; ++i) {
             this.tool[i] = new JButton(capButton[i]);
             this.tool[i].addActionListener(this);
             this.tools.add(this.tool[i]);
         }
 
         this.field[0].setText("13");
-        this.field[1].setText("150");
+        this.field[1].setText("139");
         this.field[2].setText("C:\\Users\\User\\Desktop\\M_Aghayan_MechanicsFinal\\src\\sta-f-83.stu");
         this.field[3].setText("1");
     }
@@ -89,12 +86,16 @@ public class TimeTable extends JFrame implements ActionListener {
         switch (this.getButtonIndex((JButton) click.getSource())) {
             case 0:
                 int slots = Integer.parseInt(this.field[0].getText());
-                this.courses = new CourseArray(Integer.parseInt(this.field[1].getText()) + 1, slots);
+                this.courses = new CourseArray(Integer.parseInt(this.field[1].getText()), slots);
                 this.courses.readClashes(this.field[2].getText());
                 this.draw();
                 break;
             case 1:
-                runExperiment();
+                try {
+                    runExperiment();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
                 break;
             case 2:
                 this.courses.iterate(Integer.parseInt(this.field[4].getText()));
@@ -125,51 +126,85 @@ public class TimeTable extends JFrame implements ActionListener {
         new TimeTable();
     }
 
-
     // Method to train Autoassociator with clash-free timeslots
     private void trainAutoassociator() {
-        // Get clash-free timeslots from Task 3 (assuming stored in an array named clashFreeTimeslots)
-        int[] clashFreeTimeslots = getClashFreeTimeslotsFromTask3();
+        // Get clash-free timeslots from Task 3
+        int[] clashFreeTimeslots = getClashFreeTimeslotsFromTask3(this.courses);
+        if (clashFreeTimeslots.length == 0) {
+            throw new IllegalStateException("No clash-free timeslots found.");
+        }
         // Train Autoassociator with clash-free timeslots
         autoassociator.training(clashFreeTimeslots);
     }
 
-    // Method to get clash-free timeslots from Task 3 (for demonstration purposes)
-    private int[] getClashFreeTimeslotsFromTask3() {
-        // Simulating clash-free timeslots for demonstration
-        // In a real scenario, you would obtain these from Task 3
+    // Method to get clash-free timeslots from Task 3
+    private int[] getClashFreeTimeslotsFromTask3(CourseArray courses) {
+        List<Integer> clashFreeTimeslotsList = new ArrayList<>();
         int numOfCourses = courses.length();
-        Random random = new Random();
-        int[] clashFreeTimeslots = new int[numOfCourses];
-        for (int i = 0; i < numOfCourses; i++) {
-            clashFreeTimeslots[i] = random.nextInt(numOfCourses); // Assuming timeslots are within the range [0, numOfCourses)
+
+        // Iterate through each timeslot
+        for (int timeslotIndex = 0; timeslotIndex < numOfCourses; timeslotIndex++) {
+            boolean isClashFree = true;
+
+            // Check if any course clashes in this timeslot
+            for (int courseIndex = 1; courseIndex < numOfCourses; courseIndex++) {
+                if (courses.slot(courseIndex) == timeslotIndex && courses.status(courseIndex) > 0) {
+                    isClashFree = false;
+                    break;
+                }
+            }
+
+            // If no clashes found in this timeslot, add it to the clash-free timeslots list
+            if (isClashFree) {
+                clashFreeTimeslotsList.add(timeslotIndex);
+            }
         }
+
+        // Convert clash-free timeslots list to array
+        int[] clashFreeTimeslots = new int[clashFreeTimeslotsList.size()];
+        for (int i = 0; i < clashFreeTimeslotsList.size(); i++) {
+            clashFreeTimeslots[i] = clashFreeTimeslotsList.get(i);
+        }
+
         return clashFreeTimeslots;
     }
 
     // Method to save used timeslots to a log file
-    private void saveTimeslotsToLog(int[] timeslots, int shift, int iterationIndex) {
-        try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter("timeslots_log.txt")))) {
-            writer.println("Number of Slots: " + timeslots.length);
+    private void saveTimeslotsToLog(int shift, int iterationIndex, List<Integer> clashFreeTimeslots) {
+        try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter("2nd_timeslots_log_sta-f-83.txt", true)))) {
+            writer.println("Number of Slots: " + (this.courses.length() - 1));
             writer.println("Shift: " + shift);
             writer.println("Iteration Index: " + iterationIndex);
 
-            writer.println("Timeslots:");
-            for (int i = 0; i < timeslots.length; i++) {
-                writer.println("Timeslot Index " + i + ": " + timeslots[i]);
+            writer.println("Clash-free Timeslots:");
+            for (int i = 0; i < clashFreeTimeslots.size(); i++) {
+                int timeslotIndex = clashFreeTimeslots.get(i);
+                int[] timeslotArray = courses.getTimeSlot(timeslotIndex); // Retrieve the timeslot array for the given index
+                writer.print("Timeslot Index " + timeslotIndex + ": ");
+                for (int j = 0; j < timeslotArray.length; j++) {
+                    writer.print(timeslotArray[j]);
+                    if (j < timeslotArray.length - 1) {
+                        writer.print(" "); // Add space between timeslot values
+                    }
+                }
+                writer.println();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    // Update the runExperiment method to handle the NullPointerException and improve logging
     private void runExperiment() {
         int minClashes = Integer.MAX_VALUE;
         int optimalShift = 0;
         int optimalIter = 0;
-        int[] shifts = {1, 5, 10, 15}; // Example shift values
-        int[] iterations = {5, 10, 20, 30}; // Example iteration values
+//        int[] shifts = {1, 5, 10, 15}; // first try iteration values
+//        int[] iterations = {5, 10, 20, 30}; // first try iteration values
+        int[] shifts = {5, 15, 25, 35, 45}; // second try iteration values
+        int[] iterations = {5, 20, 35, 50, 65}; // second try iteration values
 
-        try (PrintWriter log = new PrintWriter(new BufferedWriter(new FileWriter("log4.txt", true)))) {
+        try (PrintWriter log = new PrintWriter(new BufferedWriter(new FileWriter("2nd_log_sta-f-83.txt", true)))) {
             log.println("Experiment Log:");
 
             for (int shift : shifts) {
@@ -178,30 +213,50 @@ public class TimeTable extends JFrame implements ActionListener {
                     this.field[3].setText(String.valueOf(iter));
                     int currentClashes = 0;
 
-                    for (int i = 1; i <= iter; ++i) {
-                        this.courses.iterate(shift);
-                        this.draw();
-                        currentClashes = this.courses.clashesLeft();
-                        if (currentClashes < minClashes) {
-                            minClashes = currentClashes;
-                            optimalShift = shift;
-                            optimalIter = iter;
+                    // Something goes wrong around here, I'm not sure what, but the minClashes doesn't always match the lowest currentClashes, sometimes it's a lower number
+                    try {
+                        for (int i = 1; i <= iter; ++i) {
+                            this.courses.iterate(shift);
+                            this.draw();
+                            currentClashes = this.courses.clashesLeft();
+                            autoUpdateTimeslots();
+                            if (currentClashes < minClashes) {
+                                minClashes = currentClashes;
+                                optimalShift = shift;
+                                optimalIter = iter;
+                            }
                         }
-                        // Perform auto-update of timeslots using the trained autoassociator
-                        autoUpdateTimeslots();
-// Save each update instance in a log file
-                        saveUpdateInstanceToLog(courses.toArray(), shift, iter);
+                    } catch (NullPointerException e) {
+                        // Log the error and continue to the next iteration
+                        log.println("NullPointerException occurred during experiment:");
+                        log.println("Shifts: " + shift + ", Iterations: " + iter);
+                        log.println("Error message: " + e.getMessage());
+                        e.printStackTrace(log);
+                        continue; // Continue to the next iteration
                     }
+
+                    // Reset the list of clash-free timeslots
+                    List<Integer> clashFreeTimeslots = new ArrayList<>();
+
+                    // Save clash-free timeslots to the list
+                    for (int j = 1; j < this.courses.length(); j++) {
+                        if (this.courses.status(j) == 0) { // Assuming status 0 indicates clash-free
+                            clashFreeTimeslots.add(j);
+                        }
+                    }
+
+                    // Save the clash-free timeslots to the log file
+                    saveTimeslotsToLog(shift, iter, clashFreeTimeslots);
 
                     log.printf("Shifts: %d, Iterations: %d, Clashes: %d%n", shift, iter, currentClashes);
                 }
             }
 
             log.printf("Optimal Shifts: %d, Optimal Iterations: %d, Minimum Clashes: %d%n", optimalShift, optimalIter, minClashes);
-
             // Train Autoassociator with clash-free timeslots
             trainAutoassociator();
         } catch (IOException e) {
+            // Handle IOException
             e.printStackTrace();
         }
     }
@@ -217,16 +272,5 @@ public class TimeTable extends JFrame implements ActionListener {
         // Update the timeslots in the CourseArray
         courses.setTimeslots(updatedTimeslots);
     }
-
-
-    // Method to save each update instance in a log file
-    // Method to save each update instance in a log file
-    private void saveUpdateInstanceToLog(int[] updatedTimeslots, int shiftValue, int iterationIndex) {
-        // Call the method to save the timeslots to the log file
-        saveTimeslotsToLog(updatedTimeslots, shiftValue, iterationIndex);
-    }
-
-
-
 }
 

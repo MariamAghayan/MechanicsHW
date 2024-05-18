@@ -1,4 +1,6 @@
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class CourseArray {
@@ -8,10 +10,11 @@ public class CourseArray {
 
     public CourseArray(int numOfCourses, int numOfSlots) {
         period = numOfSlots;
-        elements = new Course[numOfCourses];
+        elements = new Course[numOfCourses + 1];
         for (int i = 1; i < elements.length; i++)
             elements[i] = new Course();
     }
+
 
     public void readClashes(String filename) {
         try {
@@ -51,8 +54,14 @@ public class CourseArray {
     }
 
     public int status(int index) {
-        return elements[index].clashSize();
+        if (index >= 0 && index < elements.length && elements[index] != null) {
+            return elements[index].clashSize();
+        } else {
+            // Handle the case where the index is out of bounds or the element at index is null
+            return -1; // or any other default value that makes sense
+        }
     }
+
 
     public int slot(int index) {
         return elements[index].mySlot;
@@ -67,12 +76,29 @@ public class CourseArray {
     }
 
     public int clashesLeft() {
-        int result = 0;
-        for (int i = 1; i < elements.length; i++)
-            result += elements[i].clashSize();
+        int totalClashes = 0;
 
-        return result;
+        for (int i = 1; i < elements.length; i++) {
+            Course currentCourse = elements[i];
+            if (currentCourse != null) {
+                int clashSize = currentCourse.clashSize();
+                if (clashSize >= 0) {
+                    totalClashes += clashSize;
+                } else {
+                    // Handle the case where the clash size is negative (indicating an error)
+                    System.err.println("Error: Negative clash size detected for course " + i);
+                    // Optionally, you can throw an exception or take other appropriate action
+                }
+            } else {
+                // Handle the case where the course element is null
+                System.err.println("Error: Null course element detected at index " + i);
+                // Optionally, you can throw an exception or take other appropriate action
+            }
+        }
+
+        return totalClashes;
     }
+
 
     public void iterate(int shifts) {
         for (int index = 1; index < elements.length; index++) {
@@ -89,11 +115,10 @@ public class CourseArray {
             System.out.println(i + "\t" + elements[i].mySlot);
     }
 
-    // New method: getTimeSlot
     public int[] getTimeSlot(int index) {
         int[] timeSlot = new int[elements.length];
-        for (int i = 0; i < elements.length; i++) {
-            if (elements[i].mySlot == index) {
+        for (int i = 1; i < elements.length; i++) {
+            if (elements[i] != null && elements[i].mySlot == index) {
                 timeSlot[i] = 1;
             } else {
                 timeSlot[i] = -1;
@@ -101,6 +126,7 @@ public class CourseArray {
         }
         return timeSlot;
     }
+
     public void printClashes() {
         for (int i = 1; i < elements.length; i++) {
             for (int j = 0; j < elements[i].clashesWith.size(); j++) {
@@ -126,5 +152,8 @@ public class CourseArray {
             setSlot(i, timeslots[i]);
         }
     }
+
+
+
 
 }

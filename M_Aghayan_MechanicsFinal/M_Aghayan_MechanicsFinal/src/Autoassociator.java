@@ -15,8 +15,12 @@ public class Autoassociator {
     }
 
     public void training(int[] pattern) {
-        for (int i = 0; i < weights.length; i++) {
-            for (int j = 0; j < weights.length; j++) {
+        if (pattern == null || pattern.length == 0) {
+            throw new IllegalArgumentException("Pattern array is empty or null");
+        }
+
+        for (int i = 0; i < pattern.length; i++) {
+            for (int j = 0; j < pattern.length; j++) {
                 if (i != j) {
                     weights[i][j] += pattern[i] * pattern[j];
                 }
@@ -40,7 +44,7 @@ public class Autoassociator {
         int sum = 0;
         for (int i = 0; i < neurons.length; i++) {
             if (i != index) {
-                sum += weights[index][i] * neurons[i] + 1;
+                sum += weights[index][i] * neurons[i];
             }
         }
         neurons[index] = sum >= 0 ? 1 : -1;
@@ -51,6 +55,4 @@ public class Autoassociator {
             unitUpdate(neurons);
         }
     }
-
-
 }
